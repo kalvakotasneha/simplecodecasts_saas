@@ -11,15 +11,18 @@ $useremail = FFaker::Internet.email  #=> "kirsten.greenholt@corkeryfisher.info"
 $userFirstName=FFaker::Name.first_name
 $userLastName=FFaker::Name.last_name
 
+#$webURL = 'https://coder-manual-rails-snehakalvakota.c9.io/'
+$webURL = 'http://polar-shelf-9487.herokuapp.com/'
+
 browser = Watir::Browser.new
 
 #Scenario: User should be able to access Dev Match URL
 Given(/^DevMatch website URL is provided$/) do
-  browser.goto 'http://polar-shelf-9487.herokuapp.com'
+  browser.goto $webURL
 end
 
 When(/^User accesses DevMatch website$/) do
-  if browser.url == 'http://polar-shelf-9487.herokuapp.com/'
+  if browser.url == $webURL
     puts "Url is loaded successfully".green
   else
     puts "error unable to load Url".red
@@ -77,7 +80,7 @@ end
 #Scenario: User should be able to log in dev match with valid email and password
 
 Given(/^User should able to access DevMatch login page$/) do
-  browser.goto "http://polar-shelf-9487.herokuapp.com/users/sign_in"
+  browser.goto $webURL + "users/sign_in"
 end
 
 When(/^User enters email and password to login$/) do
@@ -92,6 +95,44 @@ Then(/^User succesfully logs in$/) do
   else
     puts "error unable to log in".red
   end
+end
+
+#  Scenario: Basic User should able to visit profile
+Given(/^Basic User is logged in with valid email$/) do
+  if browser.button(:value,"Sign Out").exists?
+    puts "User already logged in"
+  else
+    browser.goto $webURL + "users/sign_in"
+    puts "Basic User Email : "+ $useremail
+    browser.text_field(:id,"user_email").set($useremail)
+    browser.text_field(:id,"user_password").set("password")
+    browser.button(:value,"Log in").click
+  end
+end
+
+When(/^Basic User clicks create profile$/) do
+  browser.link(:href,/\/users\/\d+\/profile\/new/).click
+end
+
+$basicavatarfilepath = 'C:\row\Cucumber_tests_DevMatch\female-avatar.jpg'
+When(/^Basic User fills out create profile form$/) do
+  browser.text_field(:id,"profile_first_name").set($userFirstName)
+  browser.text_field(:id,"profile_last_name").set($userLastName)
+  browser.file_field(:id,"profile_avatar").set($basicavatarfilepath)
+  browser.select_list(:id,"profile_job_title").select 'Developer'
+  browser.text_field(:id,"profile_phone_number").set(FFaker::PhoneNumber.phone_number)
+  browser.text_field(:id,"profile_contact_email").set($useremail)
+  browser.text_field(:id,"profile_description").set(FFaker::HipsterIpsum.paragraph)
+  browser.button(:value,"update profile").click
+end
+
+When(/^Basic User clicks View profile$/) do
+  browser.goto $webURL
+  browser.link(:href,/\/users\/\d+/).click
+end
+
+Then(/^Basic user can view his profile$/) do
+  browser.text.include? "Description"
 end
 
 Then(/^User signs out$/) do
@@ -128,7 +169,7 @@ Then(/^Pro User can confirm password$/) do
 end
 
 Then(/^User enters Credit Card Number$/) do
-  browser.text_field(:id,"card_number").set(FFaker::CreditCard.visa)
+  browser.text_field(:id,"card_number").set("4242424242424242")
 end
 
 Then(/^User enters Security Code on Card \(CVC\)$/) do
@@ -144,17 +185,17 @@ Then(/^User should click Sign up$/) do
   browser.button(:value,"Sign up").click
   sleep 5
   if browser.text.include? "Welcome! You have signed up successfully."
-    # puts "successfully signed up".green
+    puts "successfully signed up".green
   else
-   # puts "error unable to signup".red
+   puts "error unable to signup".red
   end
 end
 #  Scenario: User should able to visit profile
-Given(/^User is logged in with valid email$/) do
+Given(/^Pro User is logged in with valid email$/) do
   if browser.button(:value,"Sign Out").exists?
     puts "User already logged in"
   else
-    browser.goto "http://polar-shelf-9487.herokuapp.com/users/sign_in"
+    browser.goto $webURL + "users/sign_in"
     puts "Pro User Email : "+ $proUserEmail
     browser.text_field(:id,"user_email").set($proUserEmail)
     browser.text_field(:id,"user_password").set("password")
@@ -162,34 +203,34 @@ Given(/^User is logged in with valid email$/) do
   end
 end
 
-When(/^User clicks create profile$/) do
+When(/^Pro User clicks create profile$/) do
   browser.link(:href,/\/users\/\d+\/profile\/new/).click
 end
 
-$devavatarfilepath = 'C:\row\Cucumber_tests_DevMatch\developer_avatar.jpg'
-When(/^fills out create profile form$/) do
+$proavatarfilepath = 'C:\row\Cucumber_tests_DevMatch\yoda-avatar.jpg'
+When(/^Pro User fills out create profile form$/) do
   browser.text_field(:id,"profile_first_name").set($proUserFirstName)
   browser.text_field(:id,"profile_last_name").set($proUserLastName)
-  browser.file_field(:id,"profile_avatar").set($devavatarfilepathfilepath)
-  browser.select_list(:id,"profile_job_title").select 'Developer'
+  browser.file_field(:id,"profile_avatar").set($proavatarfilepath)
+  browser.select_list(:id,"profile_job_title").select 'Investor'
   browser.text_field(:id,"profile_phone_number").set(FFaker::PhoneNumber.phone_number)
   browser.text_field(:id,"profile_contact_email").set($proUserEmail)
   browser.text_field(:id,"profile_description").set(FFaker::HipsterIpsum.paragraph)
   browser.button(:value,"update profile").click
 end
 
-When(/^User clicks View profile$/) do
-  browser.goto "http://polar-shelf-9487.herokuapp.com"
+When(/^Pro User clicks View profile$/) do
+  browser.goto $webURL
   browser.link(:href,/\/users\/\d+/).click
 end
 
-Then(/^user can view his profile$/) do
+Then(/^Pro user can view his profile$/) do
   browser.text.include? "Description"
 end
 
 #Scenario: User should able to visit the community
 Given(/^logged with valid email$/) do
-  browser.goto "http://polar-shelf-9487.herokuapp.com"
+  browser.goto $webURL
 end
 
 When(/^user clicks visit the community button$/) do

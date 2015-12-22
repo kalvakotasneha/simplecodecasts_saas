@@ -17,6 +17,14 @@ Feature: DevMatch0
     Given User should able to access DevMatch login page
     When  User enters email and password to login
     Then  User succesfully logs in
+
+
+  Scenario: Basic User should able to visit profile
+    Given Basic User is logged in with valid email
+    When Basic User clicks create profile
+    And Basic User fills out create profile form
+    And Basic User clicks View profile
+    Then Basic user can view his profile
     And User signs out
 
     Scenario: User should be able to "Signup with pro"
@@ -30,12 +38,12 @@ Feature: DevMatch0
       And User Card Expiration
       And User should click Sign up
 
-  Scenario: User should able to visit profile
-    Given User is logged in with valid email
-    When User clicks create profile
-    And fills out create profile form
-    And User clicks View profile
-    Then user can view his profile
+  Scenario: Pro User should able to visit profile
+    Given Pro User is logged in with valid email
+    When Pro User clicks create profile
+    And Pro User fills out create profile form
+    And Pro User clicks View profile
+    Then Pro user can view his profile
 
   Scenario: User should able to visit the community
        Given logged with valid email
