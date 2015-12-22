@@ -207,7 +207,7 @@ When(/^Pro User clicks create profile$/) do
   browser.link(:href,/\/users\/\d+\/profile\/new/).click
 end
 
-$proavatarfilepath = 'C:\row\Cucumber_tests_DevMatch\yoda-avatar.jpg'
+$proavatarfilepath = 'C:\row\Cucumber_tests_DevMatch\entrepreneur-avatar.jpg'
 When(/^Pro User fills out create profile form$/) do
   browser.text_field(:id,"profile_first_name").set($proUserFirstName)
   browser.text_field(:id,"profile_last_name").set($proUserLastName)
